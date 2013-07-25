@@ -1,20 +1,31 @@
 %To incoporate the network model for epidemic analysis.
-function result=GraphEpiSim()
+function result=GraphEpiSim(NumNode,InitialInfection,Levels)
 %network as Adjacency Matrix first want to model spread.
-Mat=round(rand(100));
+Mat= GenerateGraph();                                          %Generation of Random Network
+Suscep=zeros(1,NumNode);                                       %Initaillsing All population as Susceptible
 
-%Start Spread
-Susceptible=zeros(1,100);
+                                                               %Initial Infection of nodes
+Initial = round(rand(1,InitialInfection)*NumNode);
+Suscep(Initial) = 1;
 
-start = round(rand()*100);
+                                                               %Initialization for infection
+Inf = Initial;
+iteration=1;
+allN=Initial(1);
+                                                               %Iteration of spreading in the network.
 
-var(1) = Mat(start,:);
-
-while(unique(unique(Susceptibles)== 1) == 1)
-    list = find(temp == 1);
-    for i=1:length(list)
-        Susceptible(list(i))=1;
-        var(end+1) = Mat(list(i),:);
+while(iteration < Levels)
+    
+    for i=1:length(Inf)
+        neig = find(Mat(Inf(i),:) == 1);
+        allN = [allN neig];
     end
-    var(1)=[]; 
+    uniN = unique(allN);
+    Inf = setdiff(uniN,find(Suscep == 1));
+    Suscep(Inf)=iteration;
+    Suscep
+    iteration=iteration+1;
+    
+end
+result=nnz(Suscep);
 end
