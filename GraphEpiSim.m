@@ -17,11 +17,11 @@ allN=Initial(1);
 while(iteration < Levels)
     
     for i=1:length(Inf)
-        neig = find(Mat(Inf(i),:) == 1);
+        neig = find(Mat(Inf(i),:) ~= 0);
         allN = [allN neig];
     end
     uniN = unique(allN);
-    Inf = setdiff(uniN,find(Suscep == 1));
+    Inf = setdiff(uniN,find(Suscep ~= 0));
     Suscep(Inf)=iteration;
     Suscep
     iteration=iteration+1;
