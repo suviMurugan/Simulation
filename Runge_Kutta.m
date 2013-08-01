@@ -7,7 +7,10 @@ function Runge_Kutta_4(InitialPop,Rate,AverDeg,Iter,VecRate,VecPopul)
 % Rate(end) is the infection rate and rate(i) other than end is the rate of
 % leaving the state. thus length(rate) = length(InitialPop) + 1;
 % ~AverDeg and iter is the average Degree of the graph assumed
-% ~VectorInf,is a value representing the birth and death rate of vectors
+% ~VecRate,is a vector where VecRate(1) is infection on the population by vector.
+% VecRate(2) is the rate with which the virus spreads, and VecRate(3) is 
+% the rate of death of the virus.
+% ~VecPopul is a single value with initial Vector population.
 
 i=1;
 h = 0.5;                                                                   % Runge-Kutta time step
