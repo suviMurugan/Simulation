@@ -15,7 +15,7 @@ function population=SimuEpiPhase(population,rateVector,iteration)
 colorcode=['y','m','c','r','g','b','k'];
 
 for i=1:iteration
-    rateVector(1)=infectRate*population(1)*(1-population(1))
+    rateVector(1)=infectRate*(1-population(1))
     rate = rateMatrixGen(rateVector);
     temp=population;
     population = population * rate;
