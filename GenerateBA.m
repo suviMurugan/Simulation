@@ -1,4 +1,4 @@
-function graph=GenerateBA(NumNode,MinDeg)
+function x=GenerateBA(NumNode,MinDeg)
 %the code is done to generate BA model of graph, preferential attachment
 %till now Mindeg not included
 %code is buggy but produces result on prob bases. if gets stuck in some
@@ -16,8 +16,10 @@ deg = 0;                                                                   %Init
             val(k)=cumulative + prob(k);
             cumulative = cumulative + prob(k);
         end 
-          value_length=unique(size(graph))
-        for j=i-1:-1:1                                                     % the allocation of edge based on the prob value.
+          value_length=unique(size(graph));
+                                                                           % the allocation of edge based on the prob value.
+           j=i+1;                                                          %Denote addition of new vertex
+           for in=1:MinDeg                                                 % mindeg number of nodes added.
             edgeProb=rand();
             for k=1:value_length;
                  if(val(k) >= edgeProb && j~=k)                             % to pervent self loop and check with prob value.
@@ -26,11 +28,14 @@ deg = 0;                                                                   %Init
                    break;
                  end
             end
-        end
-        graph
+           end
+       % graph
     end
     for i = 1 : unique(size(graph)) %find degree distribution
         x(i) = nnz (graph(i,:));
     end
-    plot(1:unique(size(graph)),x)                                          % plot the degree distribution
+   hist(x,unique(x))                                                       % hist plot against x and count of x.
+   %[a b]=hist(x,unique(x));
+   %scatter(b,a);           % to create and to plot scatter of deg Vs count
+   %make it log above to make it log-log 
 end
