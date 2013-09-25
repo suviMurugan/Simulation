@@ -40,7 +40,7 @@ move(1,:)= zeros(1,length(nodes));
                 position(t,i) = nodes(i) + move(t,i);
             end
         end
-        move(t,:)
+        neighbour(position(t,:),2)
     end
     position
 end
@@ -49,10 +49,16 @@ function dis=distance(nodes,i,j)
 dis=nodes(i)-node(j);
 end
 %find all neighbours of node i with radius rad.
-function neigh = neighbour(nodes,i,rad)
-    for j = 1:length(nodes)
-        if (distance(nodes,i,j)  < rad &&  i ~= j)
-            neigh(j)=1;
+function neigh = neighbour(nodes,rad)
+    for i = 1: length(nodes)
+        for j = 1:length(nodes)
+            if (distance(nodes,i,j)  < rad &&  i ~= j)
+                neigh(i,j)=1;
+                neigh(j,i)=1;
+            else
+                neigh(i,j)=0;
+                neigh(j,i)=0;
+            end
         end
     end
 end
