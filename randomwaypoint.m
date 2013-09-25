@@ -1,7 +1,4 @@
-function randomwaypoint(NumNodes,range,waypoints,vrange,time)
-%nodes are the coordiante values of the nodes.
-
-nodes = range(1)  + rand(1,NumNodes)*( range(2) - range(1) );
+function randomwaypoint(NumNodes,range,hotspots,vrange,time)
 %transition matrix as input.
 transMAT = [0.3 0.3 0.4; 0.2 0.4 0.4;0.5 0.3 0.2];
 cumtransMAT=zeros(3);
@@ -11,49 +8,45 @@ cumtransMAT=zeros(3);
             cumtransMAT(i,j) = sum(transMAT(i,1:j));
         end
     end
-%assigning the waypoints for each nodes by using a function
-source = neighbourwaypoint(waypoints,nodes);
+%Distributing the nodes in the corresponding hotspots
+source = ceil( rand(1,NumNodes)*(length(hotspots)-1) ) + 1              %Create a random distribution among hotspots
+nodes  = hotspots(source);                                    % assign that to the nodes position.
 %find destination according to the transition matrix.
     for i= 1 : length(nodes)
         randomVal = rand();
-        for j =length(transMAT):-1:1
-            if (randomVal  > cumtransMAT(source(i) ,j))
+        for j =1:length(transMAT)
+            if (randomVal  <= cumtransMAT(source(i) ,j))
                 destination(i) = j;
+                break
             end
         end
     end
+destination
 %assign speed of each node in vrange.
-speed = sign(waypoints(destination)-waypoints(source))*(vrange(1)  + rand(NumNodes)*( vrange(2) - vrange(1) ));
-
+speed = sign(hotspots(destination)-hotspots(source)).*(vrange(1)  + rand(1,NumNodes)*( vrange(2) - vrange(1) ))
+position(1,:)=nodes;
+move(1,:)= zeros(1,length(nodes));
 %Simulating movement
-    for t = 1:time
+    for t = 2:time
         for i = 1 : NumNodes
-            if ( position(t-1,i) < sign(waypoints(destination)-waypoints(source))*waypoints(destination(i)))
-            move(t,:)=speed(i)*t +  waypoints(source(i));
-            position(t,:) = nodes(i) + move(t,:);
+            if    ((position(t-1,i) < hotspots(destination(i)) )&& (sign(hotspots(destination(i))-hotspots(source(i)))==1 ))
+                move(t,i)     = speed(i)*t ;
+                position(t,i) = nodes(i) + move(t,i);
+            elseif ((position(t-1,i) > hotspots(destination(i)) )&& (sign(hotspots(destination(i))-hotspots(source(i)))== -1 ))
+                move(t,i)     = speed(i)*t ;
+                position(t,i) = nodes(i) + move(t,i);
+            else
+                move(t,i)     = move(t-1,i);
+                position(t,i) = nodes(i) + move(t,i);
             end
         end
+        move(t,:)
     end
+    position
 end
-
 %calulate distance between node i and j.
 function dis=distance(nodes,i,j)
 dis=nodes(i)-node(j);
-end
-
-%calulate distance from the waypoint and assign the waypoint at that
-%instance
-function node_Way=neighbourwaypoint(waypoints,nodes)
-    for i = 1 : length(nodes)
-        temp = inf;
-        for j = 1 : length(waypoints)
-            if(temp > abs(waypoints(j)-nodes(i)))
-                pos=j;
-                temp = abs(waypoints(j)-nodes(i));
-            end
-        end
-        node_Way(i) = pos; 
-    end
 end
 %find all neighbours of node i with radius rad.
 function neigh = neighbour(nodes,i,rad)
